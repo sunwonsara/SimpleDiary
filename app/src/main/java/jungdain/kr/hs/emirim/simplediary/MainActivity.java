@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
     DatePicker date;
     EditText edit;
@@ -36,6 +40,20 @@ public class MainActivity extends AppCompatActivity {
         });//날짜가 변경되었을때 일처리를 하는 핸들러를 null에다 넣으면 됨
     }
     public String readDiary(String fileName){
-        return null;
+        String diaryStr=null;
+        FileInputStream fIn =null;
+        try {
+            fIn = openFileInput(fileName);
+            byte[] buf=new byte[500];
+            fIn.read(buf); //500byte을 읽어와라
+            diaryStr=new String(buf).trim();//byte값을 string으로 바꾸는 방법 , trim():앞,뒤에 있는 공백을 제거하라, 중간공백은 제거 못함
+            but.setText("수정 하기");
+        }catch(FileNotFoundException e){
+            edit.setText("일기가 존재하지 않습니다."); //파일이 없을때
+            but.setText("새로 저장");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return diaryStr;
     }
 }
